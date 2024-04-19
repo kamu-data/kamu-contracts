@@ -1,0 +1,26 @@
+name: build
+env:
+  FOUNDRY_PROFILE: ci
+on:
+  push:
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+  workflow_dispatch: {}
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: npm ci
+      - run: forge config
+      - run: forge test

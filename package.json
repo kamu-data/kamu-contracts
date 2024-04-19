@@ -1,0 +1,50 @@
+{
+  "name": "@opendatafabric/oracle",
+  "description": "Foundry-based template for developing Solidity smart contracts",
+  "version": "1.0.0",
+  "author": {
+    "name": "Open Data Fabric Network",
+    "url": "https://github.com/open-data-fabric/"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "solidity-cborutils": "^2.0.0",
+    "witnet-solidity-bridge": "^2.0.10"
+  },
+  "devDependencies": {
+    "forge-std": "github:foundry-rs/forge-std#v1.8.1",
+    "prettier": "^3.0.0",
+    "solhint": "^3.6.2"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "forge",
+    "foundry",
+    "smart-contracts",
+    "solidity",
+    "template"
+  ],
+  "private": true,
+  "config": {
+    "script-shell": "/bin/bash"
+  },
+  "scripts": {
+    "clean": "rm -rf cache out",
+    "build": "forge build",
+    "lint": "npm run lint:sol && npm run prettier:check",
+    "lint:sol": "forge fmt --check && npx solhint {script,src,test}/**/*.sol",
+    "prettier:check": "prettier --check \"**/*.{json,md,yml}\" --ignore-path \".prettierignore\"",
+    "prettier:write": "prettier --write \"**/*.{json,md,yml}\" --ignore-path \".prettierignore\"",
+    "test": "forge test",
+    "test:coverage": "forge coverage",
+    "test:coverage:report": "forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage",
+    "deploy:local": "export $(cat .env.local | xargs) && forge script script/Deploy.s.sol --fork-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast",
+    "deploy:sepolia": "export $(cat .env.test.sepolia | xargs) && forge script script/Deploy.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
+    "send:add-executor:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addExecutor(address)' $EXECUTOR_ADDR",
+    "send:add-executor:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addExecutor(address)' $EXECUTOR_ADDR",
+    "send:oracle:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'startDistributeRewards()'",
+    "send:oracle:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'startDistributeRewards()'",
+    "call:consumer-state:local": "export $(cat .env.local | xargs) && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'"
+  }
+}
