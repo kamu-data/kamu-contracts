@@ -60,8 +60,8 @@ npm run deploy:local
 See also:
 
 ```sh
-# Send transaction to authorize local executor
-npm run send:add-executor:local
+# Send transaction to authorize local provider
+npm run send:add-provider:local
 
 # Trigger oracle request transaction from the test consumer contract
 npm run send:oracle:local

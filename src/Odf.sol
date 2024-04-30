@@ -113,23 +113,23 @@ interface IOdfClient {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// Interface used by executors
+// Interface used by data providers
 interface IOdfProvider {
     // Emitted when client request was made and awaits a response
     event SendRequest(uint64 indexed requestId, address indexed consumerAddr, bytes request);
 
-    // Emitted when an executor fulfills a pending request
+    // Emitted when a provider fulfills a pending request
     event ProvideResult(
         uint64 indexed requestId,
         address indexed consumerAddr,
-        address indexed executorAddr,
+        address indexed providerAddr,
         bytes result,
         bool consumerError,
         bytes consumerErrorData
     );
 
-    // Returned when executor was not registered to provide results to the oracle
-    error UnauthorizedExecutor(address executorAddr);
+    // Returned when provider was not registered to provide results to the oracle
+    error UnauthorizedProvider(address providerAddr);
 
     // Returned when pending request by this ID is not found
     error RequestNotFound(uint64 requestId);
@@ -146,15 +146,15 @@ interface IOdfProvider {
 
 // Interface used by oracle admins
 interface IOdfAdmin {
-    // Emitted when executor is authorized
-    event AddExecutor(address indexed executorAddr);
+    // Emitted when a provider is authorized
+    event AddProvider(address indexed providerAddr);
 
-    // Emitted when executor authorization is revoked
-    event RemoveExecutor(address indexed executorAddr);
+    // Emitted when a provider authorization is revoked
+    event RemoveProvider(address indexed providerAddr);
 
-    // Register an authorized executor
-    function addExecutor(address _addr) external;
+    // Authorizes a provider to supply results
+    function addProvider(address providerAddr) external;
 
-    // Revoke the authorization from an executor to supply results
-    function removeExecutor(address _addr) external;
+    // Revoke the authorization from a provider to supply results
+    function removeProvider(address providerAddr) external;
 }

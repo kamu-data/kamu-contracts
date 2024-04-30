@@ -41,8 +41,8 @@
     "test:coverage:report": "forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage",
     "deploy:local": "export $(cat .env.local | xargs) && forge script script/Deploy.s.sol --fork-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast",
     "deploy:sepolia": "export $(cat .env.test.sepolia | xargs) && forge script script/Deploy.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
-    "send:add-executor:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addExecutor(address)' $EXECUTOR_ADDR",
-    "send:add-executor:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addExecutor(address)' $EXECUTOR_ADDR",
+    "send:add-provider:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
+    "send:add-provider:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
     "send:oracle:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'startDistributeRewards()'",
     "send:oracle:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'startDistributeRewards()'",
     "call:consumer-state:local": "export $(cat .env.local | xargs) && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'"

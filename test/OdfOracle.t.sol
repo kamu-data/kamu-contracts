@@ -20,38 +20,38 @@ contract OdfOracleTest is Test {
         oracle = new OdfOracle({ logConsumerErrorData: false });
     }
 
-    function testOwnerCanAddExecutor() public {
+    function testOwnerCanAddProvider() public {
         vm.expectEmit(true, true, true, true);
-        emit IOdfAdmin.AddExecutor(address(0x123));
+        emit IOdfAdmin.AddProvider(address(0x123));
 
-        oracle.addExecutor(address(0x123));
+        oracle.addProvider(address(0x123));
     }
 
-    function testNonOwnerCantAddExecutor() public {
+    function testNonOwnerCantAddProvider() public {
         vm.expectRevert(
             abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(0x1))
         );
         vm.prank(address(0x1));
-        oracle.addExecutor(address(0x123));
+        oracle.addProvider(address(0x123));
     }
 
-    function testProvideResultUnauthorizedExecutor() public {
+    function testProvideResultUnauthorizedProvider() public {
         vm.expectRevert(
-            abi.encodeWithSelector(IOdfProvider.UnauthorizedExecutor.selector, address(this))
+            abi.encodeWithSelector(IOdfProvider.UnauthorizedProvider.selector, address(this))
         );
         // CBOR: {"data": []}
         oracle.provideResult(1, hex"A1646461746180");
     }
 
     function testProvideResultRequestNotFound() public {
-        oracle.addExecutor(address(this));
+        oracle.addProvider(address(this));
         vm.expectRevert(abi.encodeWithSelector(IOdfProvider.RequestNotFound.selector, 1));
         // CBOR: {"data": []}
         oracle.provideResult(1, hex"A1646461746180");
     }
 
     function testProvideResultSuccess() public {
-        oracle.addExecutor(address(this));
+        oracle.addProvider(address(this));
 
         HappyConsumer consumer = new HappyConsumer(address(oracle));
 
@@ -68,7 +68,7 @@ contract OdfOracleTest is Test {
     }
 
     function commonProvideResultConsumerSideError(ConsumerBase consumer) public {
-        oracle.addExecutor(address(this));
+        oracle.addProvider(address(this));
 
         consumer.makeReuqest();
 
