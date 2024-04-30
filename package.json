@@ -1,9 +1,9 @@
 {
-  "name": "@opendatafabric/oracle",
-  "description": "Foundry-based template for developing Solidity smart contracts",
+  "name": "@opendatafabric/contracts",
+  "description": "Set of Solidity smart contracts for interacting with Open Data Fabric network",
   "version": "1.0.0",
   "author": {
-    "name": "Open Data Fabric Network",
+    "name": "Open Data Fabric",
     "url": "https://github.com/open-data-fabric/"
   },
   "dependencies": {
