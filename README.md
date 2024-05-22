@@ -21,7 +21,20 @@ If you are new to Open Data Fabric and Kamu - please [start here](https://docs.k
 
 ## Getting Started
 
-TBD
+### Preparation
+
+For building contracts, we use [Foundry](https://github.com/foundry-rs/foundry). To install, please
+use [the official documentation](https://book.getfoundry.sh/getting-started/installation).
+
+https://book.getfoundry.sh/getting-started/installation
+
+---
+
+After that, we can start building the contacts:
+
+```shell
+npm run build
+```
 
 ## Community
 
