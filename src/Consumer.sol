@@ -25,6 +25,10 @@ contract Consumer {
 
     function startDistributeRewards() public {
         OdfRequest.Req memory req = OdfRequest.init();
+        req.dataset(
+            "kamu/covid19.canada.case-details",
+            "did:odf:fed014895afeb476d5d94c1af0668f30ab661c8561760bba6744e43225ba52e099595"
+        );
         req.sql(
             "with by_provice as ("
             "select province, count(*) as count from 'kamu/covid19.canada.case-details' group by 1),"
