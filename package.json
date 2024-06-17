@@ -1,7 +1,7 @@
 {
   "name": "@opendatafabric/contracts",
   "description": "Set of Solidity smart contracts for interacting with Open Data Fabric network",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": {
     "name": "Open Data Fabric",
     "url": "https://github.com/open-data-fabric/"
@@ -23,7 +23,6 @@
     "solidity",
     "template"
   ],
-  "private": true,
   "config": {
     "script-shell": "/bin/bash"
   },
