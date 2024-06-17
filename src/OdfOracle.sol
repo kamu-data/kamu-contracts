@@ -63,7 +63,13 @@ contract OdfOracle is IOdfClient, IOdfProvider, IOdfAdmin, Ownable {
         return sProviders[providerAddr].providerAddr == providerAddr;
     }
 
-    function provideResult(uint64 requestId, bytes memory result) external onlyAuthorizedProvider {
+    function provideResult(
+        uint64 requestId,
+        bytes calldata result
+    )
+        external
+        onlyAuthorizedProvider
+    {
         PendingRequest memory req = sRequests[requestId];
         if (req.requestId != requestId) {
             revert RequestNotFound(requestId);

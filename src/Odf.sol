@@ -59,7 +59,7 @@ interface IOdfProvider {
 
     // Called to fulfill a pending request
     // See `OdfResponse` for explanation of the `result`
-    function provideResult(uint64 requestId, bytes memory result) external;
+    function provideResult(uint64 requestId, bytes calldata result) external;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
