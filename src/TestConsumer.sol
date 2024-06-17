@@ -3,7 +3,7 @@ pragma solidity ^0.8.25;
 
 import { OdfRequest, OdfResponse, IOdfClient, CborReader } from "./Odf.sol";
 
-contract Consumer {
+contract TestConsumer {
     using OdfRequest for OdfRequest.Req;
     using OdfResponse for OdfResponse.Res;
     using CborReader for CborReader.CBOR;

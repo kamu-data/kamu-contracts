@@ -2,7 +2,7 @@
 pragma solidity ^0.8.25;
 
 import { OdfOracle } from "../src/OdfOracle.sol";
-import { Consumer } from "../src/Consumer.sol";
+import { TestConsumer } from "../src/TestConsumer.sol";
 
 import { BaseScript } from "./Base.s.sol";
 
@@ -11,6 +11,6 @@ import { BaseScript } from "./Base.s.sol";
 contract Deploy is BaseScript {
     function run() public broadcast {
         OdfOracle oracle = new OdfOracle({ logConsumerErrorData: true });
-        new Consumer(address(oracle));
+        new TestConsumer(address(oracle));
     }
 }

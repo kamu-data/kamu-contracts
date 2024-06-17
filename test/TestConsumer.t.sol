@@ -4,17 +4,17 @@ pragma solidity ^0.8.25;
 import { Test } from "forge-std/src/Test.sol";
 // import { console2 } from "forge-std/src/console2.sol";
 
-import { Consumer } from "../src/Consumer.sol";
+import { TestConsumer } from "../src/TestConsumer.sol";
 import { OdfResponse } from "../src/Odf.sol";
 import { OdfOracle } from "../src/OdfOracle.sol";
 
 contract ConsumerTest is Test {
     OdfOracle internal oracle;
-    Consumer internal consumer;
+    TestConsumer internal consumer;
 
     function setUp() public virtual {
         oracle = new OdfOracle({ logConsumerErrorData: false });
-        consumer = new Consumer(address(oracle));
+        consumer = new TestConsumer(address(oracle));
     }
 
     function testOnResultOnlyOracleRevert() public {
