@@ -26,8 +26,20 @@ contract ConsumerTest is Test {
     function testOnResultOnlyOracleOk() public {
         vm.prank(address(oracle));
 
-        // CBOR: {"data": [["ON", 100500]]}
-        consumer.onResult(OdfResponse.fromBytes(1, hex"A164646174618182624F4E1A00018894"));
+        // CBOR:
+        // [
+        //   1,
+        //   true,
+        //   [["ON", 100500]],
+        //   "data-hash",
+        //   ["did:odf:1", "block-hash"]
+        // ]
+        consumer.onResult(
+            OdfResponse.fromBytes(
+                1,
+                hex"8501F58182624F4E1A0001889469646174612D6861736882696469643A6F64663A316A626C6F636B2D68617368"
+            )
+        );
 
         assertEq(consumer.province(), "ON");
         assertEq(consumer.totalCases(), 100_500);

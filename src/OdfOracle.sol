@@ -45,6 +45,7 @@ contract OdfOracle is IOdfClient, IOdfProvider, IOdfAdmin, Ownable {
         function(OdfResponse.Res memory) external _callback
     )
         external
+        payable
         returns (uint64)
     {
         sLastRequestId += 1;
@@ -69,18 +70,26 @@ contract OdfOracle is IOdfClient, IOdfProvider, IOdfAdmin, Ownable {
         }
         delete sRequests[requestId];
 
-        OdfResponse.Res memory res = OdfResponse.fromBytes(requestId, result);
+        OdfResponse.Res memory response = OdfResponse.fromBytes(requestId, result);
 
         // TODO: Trap errors, as failure of a consumer contract doesn't mean that the oracle failed
         // to provide a valid result
-        try req.callback(res) {
-            emit ProvideResult(requestId, req.callback.address, msg.sender, result, false, "");
+        try req.callback(response) {
+            emit ProvideResult(
+                requestId, req.callback.address, msg.sender, result, !response.ok(), false, ""
+            );
         } catch (bytes memory consumerErrorData) {
             if (!LOG_CONSUMER_ERROR_DATA) {
                 consumerErrorData = "";
             }
             emit ProvideResult(
-                requestId, req.callback.address, msg.sender, result, true, consumerErrorData
+                requestId,
+                req.callback.address,
+                msg.sender,
+                result,
+                !response.ok(),
+                true,
+                consumerErrorData
             );
         }
     }

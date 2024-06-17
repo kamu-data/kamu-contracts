@@ -19,7 +19,8 @@ contract Consumer {
     }
 
     modifier onlyOracle() {
-        assert(msg.sender == address(oracle));
+        // solhint-disable-next-line custom-errors
+        require(msg.sender == address(oracle), "Can only be called by oracle");
         _;
     }
 
@@ -39,7 +40,9 @@ contract Consumer {
     }
 
     function onResult(OdfResponse.Res memory result) external onlyOracle {
-        assert(result.numRecords() == 1);
+        // solhint-disable-next-line custom-errors
+        require(result.numRecords() == 1, "Expected one record");
+
         CborReader.CBOR[] memory record = result.record(0);
         province = record[0].readString();
         totalCases = uint64(int64(record[1].readInt()));

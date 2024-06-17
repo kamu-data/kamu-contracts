@@ -39,15 +39,13 @@ contract OdfOracleTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(IOdfProvider.UnauthorizedProvider.selector, address(this))
         );
-        // CBOR: {"data": []}
-        oracle.provideResult(1, hex"A1646461746180");
+        oracle.provideResult(1, OdfResponse.empty(1).intoBytes());
     }
 
     function testProvideResultRequestNotFound() public {
         oracle.addProvider(address(this));
         vm.expectRevert(abi.encodeWithSelector(IOdfProvider.RequestNotFound.selector, 1));
-        // CBOR: {"data": []}
-        oracle.provideResult(1, hex"A1646461746180");
+        oracle.provideResult(1, OdfResponse.empty(1).intoBytes());
     }
 
     function testProvideResultSuccess() public {
@@ -59,12 +57,50 @@ contract OdfOracleTest is Test {
         emit IOdfProvider.SendRequest(1, address(consumer), "");
         consumer.makeReuqest();
 
-        // CBOR: {"data": [["test"]]}
-        bytes memory response = hex"A1646461746181816474657374";
+        // CBOR:
+        // [
+        //   1,
+        //   true,
+        //   [["test"]],
+        //   "data-hash",
+        //   ["did:odf:1", "block-hash"]
+        // ]
+        bytes memory response = hex"8501F58181647465737469646174612D"
+            hex"6861736882696469643A6F64663A316A626C6F636B2D68617368";
+
         vm.expectEmit(true, true, true, true);
-        emit IOdfProvider.ProvideResult(1, address(consumer), address(this), response, false, "");
+        emit IOdfProvider.ProvideResult(
+            1, address(consumer), address(this), response, false, false, ""
+        );
+
         oracle.provideResult(1, response);
         assertEq(consumer.value(), "test");
+    }
+
+    function testProvideResultSqlError() public {
+        oracle.addProvider(address(this));
+
+        HappyConsumer consumer = new HappyConsumer(address(oracle));
+
+        vm.expectEmit(true, true, true, false);
+        emit IOdfProvider.SendRequest(1, address(consumer), "");
+        consumer.makeReuqest();
+
+        // CBOR:
+        // [
+        //   1,
+        //   false,
+        //   "Invalid SQL"
+        // ]
+        bytes memory response = hex"8301F46B496E76616C69642053514C";
+
+        vm.expectEmit(true, true, true, true);
+        emit IOdfProvider.ProvideResult(
+            1, address(consumer), address(this), response, true, false, ""
+        );
+
+        oracle.provideResult(1, response);
+        assertEq(consumer.value(), "Invalid SQL");
     }
 
     function commonProvideResultConsumerSideError(ConsumerBase consumer) public {
@@ -72,10 +108,23 @@ contract OdfOracleTest is Test {
 
         consumer.makeReuqest();
 
-        // CBOR: {"data": [["test"]]}
-        bytes memory response = hex"A1646461746181816474657374";
+        // CBOR:
+        // {
+        //   "ok": true,
+        //   "data": [["test"]],
+        //   "dataHash": "data-hash",
+        //   "state": [
+        //     "did:odf:1", "block-hash"
+        //   ]
+        // }
+        bytes memory response = hex"8501F58181647465737469646174612D"
+            hex"6861736882696469643A6F64663A316A626C6F636B2D68617368";
+
         vm.expectEmit(true, true, true, true);
-        emit IOdfProvider.ProvideResult(1, address(consumer), address(this), response, true, "");
+        emit IOdfProvider.ProvideResult(
+            1, address(consumer), address(this), response, false, true, ""
+        );
+
         oracle.provideResult(1, response);
     }
 
@@ -103,7 +152,8 @@ abstract contract ConsumerBase {
     }
 
     modifier onlyOracle() {
-        assert(msg.sender == address(oracle));
+        // solhint-disable-next-line custom-errors
+        require(msg.sender == address(oracle), "Called by non oracle");
         _;
     }
 
@@ -123,8 +173,13 @@ contract HappyConsumer is ConsumerBase {
     constructor(address oracleAddr) ConsumerBase(oracleAddr) { }
 
     function onResult(OdfResponse.Res memory result) external override onlyOracle {
-        assert(result.numRecords() == 1);
-        value = result.record(0)[0].readString();
+        if (result.ok()) {
+            // solhint-disable-next-line custom-errors
+            require(result.numRecords() == 1, "Expected one record");
+            value = result.record(0)[0].readString();
+        } else {
+            value = result.errorMessage();
+        }
     }
 }
 
@@ -132,7 +187,8 @@ contract FaultyConsumerAssertion is ConsumerBase {
     constructor(address oracleAddr) ConsumerBase(oracleAddr) { }
 
     function onResult(OdfResponse.Res memory) external view override onlyOracle {
-        assert(0 == 100_500);
+        // solhint-disable-next-line custom-errors
+        require(0 == 100_500, "Unexpected result");
     }
 }
 
