@@ -20,10 +20,10 @@ import { CborWriter } from "./CborWriter.sol";
 //     [<row2-col1>, <row2-col2>, ...],
 //     ...
 //   ],
-//   "<data-logical-multihash>",
+//   b"data-logical-multihash",
 //   [
-//     "odf:did:...", "<dataset1-block-multihash>",
-//     "odf:did:...", "<dataset2-block-multihash>",
+//     b"odf:did:x", b"block1-multihash",
+//     b"odf:did:y", b"block2-multihash",
 //     ...
 //   ]
 // ]
@@ -35,6 +35,8 @@ import { CborWriter } from "./CborWriter.sol";
 //   false, // error
 //   "SQL query error ..." // error message
 // ]
+//
+// Note that DIDs and Multihashes are encoded as binaries to save space.
 //
 library OdfResponse {
     using CborReader for CborReader.CBOR;
