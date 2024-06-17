@@ -1,6 +1,6 @@
 <div align="center">
 
-<img alt="kamu - planet-scale data pipeline" src="docs/readme_files/kamu_logo.png" width=300/>
+<img alt="Open Data Fabric Network" src="docs/readme_files/odf-logo.png" width=350/>
 
 <p>
 
