@@ -101,6 +101,7 @@ library OdfRequest {
         self._buf.writeBytes(_did);
     }
 
+    // solhint-disable custom-errors
     function didToBytes(string memory _did) private pure returns (bytes memory) {
         bytes memory bin = bytes(_did);
 
@@ -117,6 +118,7 @@ library OdfRequest {
         return result;
     }
 
+    // solhint-disable custom-errors
     function hexToInt(bytes1 c) public pure returns (uint8) {
         if (c >= bytes1("0") && c <= bytes1("9")) {
             return uint8(c) - uint8(bytes1("0"));
@@ -127,7 +129,7 @@ library OdfRequest {
         if (bytes1(c) >= bytes1("A") && bytes1(c) <= bytes1("F")) {
             return 10 + uint8(c) - uint8(bytes1("A"));
         }
-        revert("fail");
+        revert("Not a hex char");
     }
 }
 

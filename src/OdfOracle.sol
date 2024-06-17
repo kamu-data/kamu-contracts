@@ -22,17 +22,25 @@ contract OdfOracle is IOdfClient, IOdfProvider, IOdfAdmin, Ownable {
     }
 
     bool private immutable LOG_CONSUMER_ERROR_DATA;
-    uint64 private sLastRequestId = 0;
+    bool private _disabled = false;
+    uint64 private _lastRequestId = 0;
 
-    mapping(address providerAddress => ProviderInfo providerInfo) private sProviders;
-    mapping(uint64 requestId => PendingRequest pendingRequest) private sRequests;
+    mapping(address providerAddress => ProviderInfo providerInfo) private _providers;
+    mapping(uint64 requestId => PendingRequest pendingRequest) private _requests;
 
     constructor(bool logConsumerErrorData) Ownable(msg.sender) {
         LOG_CONSUMER_ERROR_DATA = logConsumerErrorData;
     }
 
+    modifier ifEnabled() {
+        if (_disabled) {
+            revert ContractDisabled();
+        }
+        _;
+    }
+
     modifier onlyAuthorizedProvider() {
-        if (sProviders[msg.sender].providerAddr != msg.sender) {
+        if (_providers[msg.sender].providerAddr != msg.sender) {
             revert UnauthorizedProvider(msg.sender);
         }
         _;
@@ -46,21 +54,22 @@ contract OdfOracle is IOdfClient, IOdfProvider, IOdfAdmin, Ownable {
     )
         external
         payable
+        ifEnabled
         returns (uint64)
     {
-        sLastRequestId += 1;
-        sRequests[sLastRequestId] = PendingRequest(sLastRequestId, _callback);
+        _lastRequestId += 1;
+        _requests[_lastRequestId] = PendingRequest(_lastRequestId, _callback);
 
         bytes memory requestData = _request.intoBytes();
-        emit SendRequest(sLastRequestId, _callback.address, requestData);
+        emit SendRequest(_lastRequestId, _callback.address, requestData);
 
-        return sLastRequestId;
+        return _lastRequestId;
     }
 
     // IOdfProvider
 
-    function canProvideResults(address providerAddr) external view returns (bool) {
-        return sProviders[providerAddr].providerAddr == providerAddr;
+    function canProvideResults(address providerAddr) external view ifEnabled returns (bool) {
+        return _providers[providerAddr].providerAddr == providerAddr;
     }
 
     function provideResult(
@@ -68,13 +77,14 @@ contract OdfOracle is IOdfClient, IOdfProvider, IOdfAdmin, Ownable {
         bytes calldata result
     )
         external
+        ifEnabled
         onlyAuthorizedProvider
     {
-        PendingRequest memory req = sRequests[requestId];
+        PendingRequest memory req = _requests[requestId];
         if (req.requestId != requestId) {
             revert RequestNotFound(requestId);
         }
-        delete sRequests[requestId];
+        delete _requests[requestId];
 
         OdfResponse.Res memory response = OdfResponse.fromBytes(requestId, result);
 
@@ -103,12 +113,24 @@ contract OdfOracle is IOdfClient, IOdfProvider, IOdfAdmin, Ownable {
     // IOdfAdmin
 
     function addProvider(address providerAddr) external onlyOwner {
-        sProviders[providerAddr] = ProviderInfo(providerAddr);
+        _providers[providerAddr] = ProviderInfo(providerAddr);
         emit AddProvider(providerAddr);
     }
 
     function removeProvider(address providerAddr) external onlyOwner {
-        delete sProviders[providerAddr];
+        delete _providers[providerAddr];
         emit RemoveProvider(providerAddr);
+    }
+
+    // Emergency
+
+    function disableContract() external onlyOwner {
+        _disabled = true;
+    }
+
+    function withdraw(address payable to, uint256 amount) external onlyOwner {
+        // solhint-disable-next-line custom-errors
+        require(amount <= address(this).balance, "Insufficient funds");
+        to.transfer(amount);
     }
 }
