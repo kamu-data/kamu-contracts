@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.25;
 
-import { OdfRequest, OdfResponse, IOdfClient } from "./Odf.sol";
-import { WitnetCBOR as CborReader } from "witnet-solidity-bridge/contracts/libs/WitnetCBOR.sol";
+import { OdfRequest, OdfResponse, IOdfClient, CborReader } from "./Odf.sol";
 
 contract Consumer {
     using OdfRequest for OdfRequest.Req;
@@ -10,9 +9,6 @@ contract Consumer {
     using CborReader for CborReader.CBOR;
 
     IOdfClient private oracle;
-
-    string public province;
-    uint64 public totalCases;
 
     constructor(address oracleAddr) {
         oracle = IOdfClient(oracleAddr);
@@ -24,7 +20,8 @@ contract Consumer {
         _;
     }
 
-    function startDistributeRewards() public {
+    // Specific query
+    function initiateQuery() public {
         OdfRequest.Req memory req = OdfRequest.init();
         req.dataset(
             "kamu/covid19.canada.case-details",
@@ -39,6 +36,9 @@ contract Consumer {
         oracle.sendRequest(req, this.onResult);
     }
 
+    string public province;
+    uint64 public totalCases;
+
     function onResult(OdfResponse.Res memory result) external onlyOracle {
         // solhint-disable-next-line custom-errors
         require(result.numRecords() == 1, "Expected one record");
@@ -46,5 +46,29 @@ contract Consumer {
         CborReader.CBOR[] memory record = result.record(0);
         province = record[0].readString();
         totalCases = uint64(int64(record[1].readInt()));
+    }
+
+    // Generic query
+    function initiateQueryGeneric(
+        string memory sql,
+        string memory datasetAlias,
+        string memory datasetId
+    )
+        public
+    {
+        OdfRequest.Req memory req = OdfRequest.init();
+        req.dataset(datasetAlias, datasetId);
+        req.sql(sql);
+        oracle.sendRequest(req, this.onResultGeneric);
+    }
+
+    bool public resultOk;
+    uint64 public numRecords;
+    string public errorMessage;
+
+    function onResultGeneric(OdfResponse.Res memory result) external onlyOracle {
+        resultOk = result.ok();
+        numRecords = result.numRecords();
+        errorMessage = result.errorMessage();
     }
 }

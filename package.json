@@ -7,9 +7,7 @@
     "url": "https://github.com/open-data-fabric/"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.1",
-    "solidity-cborutils": "^2.0.0",
-    "witnet-solidity-bridge": "^2.0.10"
+    "@openzeppelin/contracts": "^5.0.1"
   },
   "devDependencies": {
     "forge-std": "github:foundry-rs/forge-std#v1.8.1",
@@ -43,8 +41,8 @@
     "deploy:sepolia": "export $(cat .env.test.sepolia | xargs) && forge script script/Deploy.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
     "send:add-provider:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
     "send:add-provider:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
-    "send:oracle:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'startDistributeRewards()'",
-    "send:oracle:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'startDistributeRewards()'",
+    "send:oracle:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
+    "send:oracle:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
     "call:consumer-state:local": "export $(cat .env.local | xargs) && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'"
   }
 }

@@ -4,10 +4,16 @@ pragma solidity ^0.8.25;
 import { Test } from "forge-std/src/Test.sol";
 // import { console2 } from "forge-std/src/console2.sol";
 
-import { OdfRequest, OdfResponse, IOdfClient, IOdfProvider, IOdfAdmin } from "../src/Odf.sol";
+import {
+    OdfRequest,
+    OdfResponse,
+    IOdfClient,
+    IOdfProvider,
+    IOdfAdmin,
+    CborReader
+} from "../src/Odf.sol";
 import { OdfOracle } from "../src/OdfOracle.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
-import { WitnetCBOR as CborReader } from "witnet-solidity-bridge/contracts/libs/WitnetCBOR.sol";
 
 contract OdfOracleTest is Test {
     using OdfRequest for OdfRequest.Req;
