@@ -4,8 +4,8 @@
 
 <p>
 
-[![Release](https://img.shields.io/github/v/release/kamu-data/kamu-contracts?include_prereleases&logo=npm&logoColor=orange&style=for-the-badge)](https://github.com/kamu-data/kamu-contracts/releases/latest)
-[![CI](https://img.shields.io/github/actions/workflow/status/kamu-data/kamu-contracts/build.yaml?logo=githubactions&label=CI&logoColor=white&style=for-the-badge&branch=master)](https://github.com/kamu-data/kamu-contracts/actions)
+[![Release](https://img.shields.io/npm/v/@opendatafabric/contracts?include_prereleases&logo=npm&logoColor=orange&style=for-the-badge)](https://github.com/kamu-data/kamu-contracts/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/kamu-data/kamu-contracts/build.yml?logo=githubactions&label=CI&logoColor=white&style=for-the-badge&branch=master)](https://github.com/kamu-data/kamu-contracts/actions)
 [![Chat](https://shields.io/discord/898726370199359498?style=for-the-badge&logo=discord&label=Discord)](https://discord.gg/nU6TXRQNXC)
 
 </p>
