@@ -1,7 +1,7 @@
 {
   "name": "@opendatafabric/contracts",
   "description": "Set of Solidity smart contracts for interacting with Open Data Fabric network",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": {
     "name": "Open Data Fabric",
     "url": "https://github.com/open-data-fabric/"
@@ -41,12 +41,16 @@
     "test": "forge test",
     "test:coverage": "forge coverage",
     "test:coverage:report": "forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage",
-    "deploy:local": "export $(cat .env.local | xargs) && forge script script/Deploy.s.sol --fork-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast",
-    "deploy:sepolia": "export $(cat .env.test.sepolia | xargs) && forge script script/Deploy.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
-    "send:add-provider:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
-    "send:add-provider:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
-    "send:oracle:local": "export $(cat .env.local | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
-    "send:oracle:sepolia": "export $(cat .env.test.sepolia | xargs) && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
-    "call:consumer-state:local": "export $(cat .env.local | xargs) && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'"
+    "deploy:local": "source ./.env.local && forge script script/Deploy.s.sol --fork-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast",
+    "deploy:sepolia": "source ./.env.test.sepolia && forge script script/Deploy.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
+    "deploy:consumer:local": "source ./.env.local && forge script script/DeployTestConsumer.s.sol --fork-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast",
+    "deploy:consumer:sepolia": "source ./.env.test.sepolia && forge script script/DeployTestConsumer.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
+    "send:add-provider:local": "source ./.env.local && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
+    "send:add-provider:sepolia": "source ./.env.test.sepolia && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
+    "send:initiate:local": "source ./.env.local && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
+    "send:initiate:sepolia": "source ./.env.test.sepolia && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
+    "send:initiate-generic:sepolia": "source ./.env.test.sepolia && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQueryGeneric(string sql, string alias, string id)' \"$QUERY_GENERIC_SQL\" \"$QUERY_GENERIC_ALIAS\" \"$QUERY_GENERIC_ID\"",
+    "call:consumer-state:local": "source ./.env.local && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'",
+    "call:consumer-state:sepolia": "source ./.env.test.sepolia && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'"
   }
 }
