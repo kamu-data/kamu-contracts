@@ -42,15 +42,15 @@
     "test:coverage": "forge coverage",
     "test:coverage:report": "forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage",
     "deploy:local": "source ./.env.local && forge script script/Deploy.s.sol --fork-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast",
-    "deploy:sepolia": "source ./.env.test.sepolia && forge script script/Deploy.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
+    "deploy:remote": "source ./.env.$NET && forge script script/Deploy.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
     "deploy:consumer:local": "source ./.env.local && forge script script/DeployTestConsumer.s.sol --fork-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast",
-    "deploy:consumer:sepolia": "source ./.env.test.sepolia && forge script script/DeployTestConsumer.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
+    "deploy:consumer:remote": "source ./.env.$NET && forge script script/DeployTestConsumer.s.sol -vvvv --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify",
     "send:add-provider:local": "source ./.env.local && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
-    "send:add-provider:sepolia": "source ./.env.test.sepolia && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
+    "send:add-provider:remote": "source ./.env.$NET && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $ORACLE_CONTRACT_ADDR 'addProvider(address)' $PROVIDER_ADDR",
     "send:initiate:local": "source ./.env.local && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
-    "send:initiate:sepolia": "source ./.env.test.sepolia && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
-    "send:initiate-generic:sepolia": "source ./.env.test.sepolia && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQueryGeneric(string sql, string alias, string id)' \"$QUERY_GENERIC_SQL\" \"$QUERY_GENERIC_ALIAS\" \"$QUERY_GENERIC_ID\"",
+    "send:initiate:remote": "source ./.env.$NET && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQuery()'",
+    "send:initiate-generic:remote": "source ./.env.$NET && cast send --rpc-url $RPC_URL --private-key $PRIVATE_KEY $CONSUMER_CONTRACT_ADDR 'initiateQueryGeneric(string sql, string alias, string id)' \"$QUERY_GENERIC_SQL\" \"$QUERY_GENERIC_ALIAS\" \"$QUERY_GENERIC_ID\"",
     "call:consumer-state:local": "source ./.env.local && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'",
-    "call:consumer-state:sepolia": "source ./.env.test.sepolia && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'"
+    "call:consumer-state:remote": "source ./.env.$NET && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'province() returns(string)' && cast call --rpc-url $RPC_URL $CONSUMER_CONTRACT_ADDR 'totalCases() returns(uint64)'"
   }
 }
