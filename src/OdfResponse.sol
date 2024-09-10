@@ -20,7 +20,7 @@ import { CborWriter } from "./CborWriter.sol";
 //     [<row2-col1>, <row2-col2>, ...],
 //     ...
 //   ],
-//   b"data-logical-multihash",
+//   b"<deprecated>",
 //   [
 //     b"odf:did:x", b"block1-multihash",
 //     b"odf:did:y", b"block2-multihash",

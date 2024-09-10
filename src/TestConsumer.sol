@@ -32,7 +32,7 @@ contract TestConsumer {
         // Repeat this call for multiple inputs.
         req.dataset(
             "kamu/covid19.canada.case-details",
-            "did:odf:fed01c8788dc7825dc95dfaa6c67f989b758d3ebcb1efcb9f47ea914470bd1f7f2bbb"
+            "did:odf:fed01dcda047d51fc88246c730db522d36791c9e2286af23d9f2b920f09c65952e3d0"
         );
 
         // Specify an arbitrary complex SQL query.
